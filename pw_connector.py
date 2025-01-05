@@ -2,11 +2,15 @@ import pathway as pw
 import PyPDF2
 from io import BytesIO
 import re
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+NONPUBLISHABLE_FOLDER_ID = os.getenv("NONPUBLISHABLE_FOLDER_ID")
 
 # Step 1: Read PDF files from GDrive folder
-# Use `with_metadata=True` to include all file metadata
 table = pw.io.gdrive.read(
-    object_id="1_xFmMlrNDR0wzzPsv6wXXdGz0eX6vaYb",
+    object_id=NONPUBLISHABLE_FOLDER_ID,
     service_user_credentials_file="credentials.json",
     mode="static",
     file_name_pattern="*.pdf",
@@ -108,10 +112,8 @@ structured_table = decoded_table.select(
     ),  # Extract structured sections for each file
 )
 
-# Step 5: Run the computation
 pw.run()
 
 # Step 6: Debug the structured results
-# Debug and print all rows for inspection
 print("DEBUGGING TABLE OUTPUT:")
 pw.debug.compute_and_print(structured_table)
