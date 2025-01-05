@@ -2,23 +2,20 @@ import pathway as pw
 import PyPDF2
 from io import BytesIO
 import re
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-NONPUBLISHABLE_FOLDER_ID = os.getenv("NONPUBLISHABLE_FOLDER_ID")
-
-# Step 1: Read PDF files from GDrive folder
-table = pw.io.gdrive.read(
-    object_id=NONPUBLISHABLE_FOLDER_ID,
-    service_user_credentials_file="credentials.json",
-    mode="static",
-    file_name_pattern="*.pdf",
-    with_metadata=True,  # Include file metadata
-)
 
 
-# Step 2: Decode the raw PDF bytes and extract text
+# Function to create a Pathway table for a given folder ID
+def create_table(folder_id):
+    return pw.io.gdrive.read(
+        object_id=folder_id,
+        service_user_credentials_file="credentials.json",
+        mode="static",
+        file_name_pattern="*.pdf",
+        with_metadata=True,
+    )
+
+
+# Function to decode PDF content
 def decode_pdf(pdf_bytes):
     try:
         pdf_reader = PyPDF2.PdfReader(BytesIO(pdf_bytes))
@@ -30,7 +27,7 @@ def decode_pdf(pdf_bytes):
         return f"Error decoding PDF: {str(e)}"
 
 
-# Step 3: Extract structured sections using regex
+# Function to extract structured sections from text
 def extract_sections(text):
     sections = {
         "abstract": "",
@@ -42,8 +39,6 @@ def extract_sections(text):
     }
     try:
         text = re.sub(r"\n+", "\n", text)  # Normalize line breaks
-
-        # Extract sections using case-insensitive regex
         sections["abstract"] = (
             re.search(
                 r"(?i)(?<=abstract).*?(?=\n1\s|introduction|methods|methodology)",
@@ -93,27 +88,16 @@ def extract_sections(text):
     return sections
 
 
-# Step 4: Apply decoding and extraction functions to all files in the folder
-decoded_table = table.select(
-    file_id=table._metadata["id"],  # Unique identifier for each file
-    file_name=table._metadata["name"],  # File name for debugging/logging
-    mime_type=table._metadata["mimeType"],  # MIME type for validation
-    modified_time=table._metadata["modifiedTime"],  # Last modification time
-    raw_text=pw.apply(decode_pdf, table.data),  # Decoded text for each file
-)
-
-structured_table = decoded_table.select(
-    file_id=decoded_table.file_id,  # Preserve unique file ID
-    file_name=decoded_table.file_name,  # Preserve file name for readability
-    mime_type=decoded_table.mime_type,  # Preserve MIME type
-    modified_time=decoded_table.modified_time,  # Preserve modification time
-    sections=pw.apply(
-        extract_sections, decoded_table.raw_text
-    ),  # Extract structured sections for each file
-)
-
-pw.run()
-
-# Step 6: Debug the structured results
-print("DEBUGGING TABLE OUTPUT:")
-pw.debug.compute_and_print(structured_table)
+# Function to process a Pathway table
+def process_table(table):
+    decoded_table = table.select(
+        file_id=table._metadata["id"],
+        file_name=table._metadata["name"],
+        raw_text=pw.apply(decode_pdf, table.data),
+    )
+    structured_table = decoded_table.select(
+        file_id=decoded_table.file_id,
+        file_name=decoded_table.file_name,
+        sections=pw.apply(extract_sections, decoded_table.raw_text),
+    )
+    return structured_table
