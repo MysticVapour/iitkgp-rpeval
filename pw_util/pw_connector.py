@@ -1,7 +1,16 @@
 import pathway as pw
 import PyPDF2
 from io import BytesIO
-import re
+from dotenv import load_dotenv
+import json
+import os
+
+load_dotenv()
+
+# Function to extract structured sections from text
+from openai import OpenAI
+
+client = OpenAI()
 
 
 # Function to create a Pathway table for a given folder ID
@@ -27,8 +36,8 @@ def decode_pdf(pdf_bytes):
         return f"Error decoding PDF: {str(e)}"
 
 
-# Function to extract structured sections from text
 def extract_sections(text):
+
     sections = {
         "abstract": "",
         "introduction": "",
@@ -37,54 +46,39 @@ def extract_sections(text):
         "discussion": "",
         "conclusion": "",
     }
+
+    json_template = """{"abstract": "", "introduction": "", "methodology": "", "results": "", "discussion": "", "conclusion": ""}"""
+
+    prompt = (
+        "You are an expert in research papers. Extract the following sections from the given text: "
+        "Abstract, Introduction, Methodology, Results, Discussion, and Conclusion. "
+        "If a section is missing, leave it blank. Return the output as a JSON object of this format strictly: "
+        f"{json_template}\n\n"
+        f"Text: {text}"
+    )
+
     try:
-        text = re.sub(r"\n+", "\n", text)  # Normalize line breaks
-        sections["abstract"] = (
-            re.search(
-                r"(?i)(?<=abstract).*?(?=\n1\s|introduction|methods|methodology)",
-                text,
-                re.DOTALL,
-            )
-            .group(0)
-            .strip()
+        # Use the OpenAI API to process the text
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant for research paper analysis.",
+                },
+                {"role": "user", "content": prompt},
+            ],
+            response_format={"type": "json_object"},
+            temperature=0,
         )
-        sections["introduction"] = (
-            re.search(
-                r"(?i)(introduction).*?(?=\n1\s|methods|methodology|results)",
-                text,
-                re.DOTALL,
-            )
-            .group(0)
-            .strip()
-        )
-        sections["methodology"] = (
-            re.search(
-                r"(?i)(methods|methodology).*?(?=\n1\s|results|discussion)",
-                text,
-                re.DOTALL,
-            )
-            .group(0)
-            .strip()
-        )
-        sections["results"] = (
-            re.search(
-                r"(?i)(results).*?(?=\n1\s|discussion|conclusion)", text, re.DOTALL
-            )
-            .group(0)
-            .strip()
-        )
-        sections["discussion"] = (
-            re.search(r"(?i)(discussion).*?(?=\n1\s|conclusion)", text, re.DOTALL)
-            .group(0)
-            .strip()
-        )
-        sections["conclusion"] = (
-            re.search(r"(?i)(conclusion).*", text, re.DOTALL).group(0).strip()
-        )
-    except AttributeError:
-        pass  # Gracefully handle missing sections
+
+        # Parse the response to extract sections
+        gpt_response = completion.choices[0].message.content
+        sections = json.loads(gpt_response)
+
     except Exception as e:
-        print(f"Error extracting sections: {e}")
+        print(f"Error using GPT for section extraction: {e}")
+
     return sections
 
 
