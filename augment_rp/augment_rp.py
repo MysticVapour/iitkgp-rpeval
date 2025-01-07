@@ -1,5 +1,5 @@
 import os
-from PyPDF2 import PdfReader, PdfWriter
+from PyPDF2 import PdfReader
 from openai import OpenAI
 
 # Initialize OpenAI client
@@ -18,7 +18,7 @@ def extract_text_from_pdf(pdf_path):
 
 
 def mess_up_text_with_gpt(original_text, guidelines):
-    """Generate a messed-up version of the text using GPT."""
+    """Generate a messed-up version of the text using GPT with Markdown styling."""
     print("Sending original text to GPT for modification...")
     prompt = f"""
     Here is a research paper excerpt:
@@ -27,8 +27,22 @@ def mess_up_text_with_gpt(original_text, guidelines):
     ---
     Using the following guidelines:
     {guidelines}
-    Introduce critical issues, such as inappropriate methodologies, incoherent arguments, or unsubstantiated claims, that affect the paper's suitability for publication. 
-    The modified version should include one or a mix of these issues, but it should not contain all problems in every case.
+    Create a modified version of this paper with critical issues introduced. You MUST include ALL sections from the original paper (including abstract, introduction, methodology, results, conclusion, etc.) without omitting any content. Format the text using Markdown:
+    - `#` for the main title
+    - `##` for section headings (like Abstract, Introduction, etc.)
+    - `###` for subsection headings
+    - Bullet points (`-`) for lists where applicable
+    - **Bold** for emphasized points
+    - *Italics* for softer emphasis
+
+    IMPORTANT:
+    1. Do NOT omit or skip ANY section from the original paper
+    2. The abstract section MUST be included and placed at the beginning
+    3. Maintain the same structure and flow as the original paper
+    4. Introduce intentional issues in methodologies, arguments, or claims as per guidelines
+    5. Make the issues subtle enough that they aren't immediately obvious
+    
+    Your output should contain all the original text but with strategic modifications that make it unpublishable.
     """
     # Use the OpenAI API to process the text
     completion = client.chat.completions.create(
@@ -47,12 +61,18 @@ def mess_up_text_with_gpt(original_text, guidelines):
 
 
 def process_papers(input_folder, output_folder, guidelines):
-    """Process all papers in a folder and save modified versions."""
+    """Process all papers in a folder and save modified versions as Markdown files."""
     print(f"Processing all papers in folder: {input_folder}")
+    count = 1
+    total = len(os.listdir(input_folder))
     for filename in os.listdir(input_folder):
+        print("Printing file", count, " of ", total)
+        count += 1
         if filename.endswith(".pdf"):
             input_path = os.path.join(input_folder, filename)
-            output_path = os.path.join(output_folder, f"messed_up_{filename}")
+            output_path = os.path.join(
+                output_folder, f"messed_up_{os.path.splitext(filename)[0]}.md"
+            )
 
             print(f"Processing file: {filename}")
 
@@ -62,23 +82,11 @@ def process_papers(input_folder, output_folder, guidelines):
             # Modify text using GPT
             messed_up_text = mess_up_text_with_gpt(original_text, guidelines)
 
-            # Read the original PDF to get the page size
-            print(f"Reading dimensions from the original PDF: {filename}")
-            reader = PdfReader(input_path)
-            first_page = reader.pages[0]
-            width = first_page.mediabox.width
-            height = first_page.mediabox.height
-            print(f"Page dimensions for {filename} - Width: {width}, Height: {height}")
-
-            # Create a writer and add a blank page
-            print(f"Creating a new PDF for the messed-up paper: {filename}")
-            writer = PdfWriter()
-            writer.add_blank_page(width=width, height=height)
-
-            # Save the blank page with messed-up text
-            with open(output_path, "wb") as output_pdf:
-                writer.write(output_pdf)
-            print(f"Saved modified paper to: {output_path}")
+            # Save the messed-up text as a Markdown file
+            print(f"Saving messed-up paper as Markdown: {output_path}")
+            with open(output_path, "w") as md_file:
+                md_file.write(f"# Messed-Up Paper: {filename}\n\n")
+                md_file.write(messed_up_text)
 
     print(f"All files processed. Output saved to: {output_folder}")
 
@@ -96,7 +104,7 @@ presents arguments that are unclear, disorganized, or lack logical coherence, or
 one that claims results that appear unusually high or unrealistic without sufficient
 evidence or proper validation, would also fall into the "Non-Publishable" category.
 
-Note: Not all problems need to exist in the papers; it needs to be a mix of some or just one.
+Note: Not all problems need not exist in the papers; it needs to be a mix of some or just one.
 """
 
 print("Creating output directory if it does not exist...")
