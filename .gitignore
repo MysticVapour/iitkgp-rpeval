@@ -4,3 +4,5 @@ credentials.json
 __pycache__
 *.db
 .DS_Store
+input_rp
+output_rp
