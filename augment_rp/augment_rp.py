@@ -60,8 +60,11 @@ def mess_up_text_with_gpt(original_text, guidelines):
     return completion.choices[0].message.content
 
 
+from markdown_pdf import MarkdownPdf, Section
+
+
 def process_papers(input_folder, output_folder, guidelines):
-    """Process all papers in a folder and save modified versions as Markdown files."""
+    """Process all papers in a folder and save modified versions as PDF files."""
     print(f"Processing all papers in folder: {input_folder}")
     count = 1
     total = len(os.listdir(input_folder))
@@ -70,8 +73,8 @@ def process_papers(input_folder, output_folder, guidelines):
         count += 1
         if filename.endswith(".pdf"):
             input_path = os.path.join(input_folder, filename)
-            output_path = os.path.join(
-                output_folder, f"messed_up_{os.path.splitext(filename)[0]}.md"
+            pdf_output_path = os.path.join(
+                output_folder, f"messed_up_{os.path.splitext(filename)[0]}_modified.pdf"
             )
 
             print(f"Processing file: {filename}")
@@ -82,11 +85,12 @@ def process_papers(input_folder, output_folder, guidelines):
             # Modify text using GPT
             messed_up_text = mess_up_text_with_gpt(original_text, guidelines)
 
-            # Save the messed-up text as a Markdown file
-            print(f"Saving messed-up paper as Markdown: {output_path}")
-            with open(output_path, "w") as md_file:
-                md_file.write(f"# Messed-Up Paper: {filename}\n\n")
-                md_file.write(messed_up_text)
+            # Convert directly to PDF
+            print(f"Converting to PDF: {pdf_output_path}")
+            pdf = MarkdownPdf(toc_level=2)
+            pdf.add_section(Section(f"{messed_up_text}"))
+            pdf.meta["title"] = f"messed_up_paper_{filename}"
+            pdf.save(pdf_output_path)
 
     print(f"All files processed. Output saved to: {output_folder}")
 
