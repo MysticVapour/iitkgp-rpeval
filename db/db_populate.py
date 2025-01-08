@@ -10,13 +10,13 @@ load_dotenv()
 
 # Folder IDs
 FOLDER_IDS = {
-    "unlabelled": os.getenv("UNLABELLED_FOLDER_ID"),
-    "non_publishable": os.getenv("NONPUBLISHABLE_FOLDER_ID"),
-    "cvpr": os.getenv("CVPR_PUB_FOLDER_ID"),
-    "emnlp": os.getenv("EMNLP_PUB_FOLDER_ID"),
-    "kdd": os.getenv("KDD_PUB_FOLDER_ID"),
-    "neurips": os.getenv("NEURIPS_PUB_FOLDER_ID"),
-    "tmlr": os.getenv("TMLR_PUB_FOLDER_ID"),
+    "unlabelled": "1Y2Y0EsMalo26KcJiPYcAXh6UzgMNjh4u",
+    "non_publishable": "1_xFmMlrNDR0wzzPsv6wXXdGz0eX6vaYb",
+    "cvpr": "1RifJJBjm5tA8E20808RjvkIAiWnFbceb",
+    "emnlp": "1JVzabziJf4d2drCTXFssFr_wZMnjr8oT", 
+    "kdd": "1sJKv0o5ySrigZewU_wtTxysx9j0kO_nV",
+    "neurips": "1ZgkbpvhoNKUuH0b4uCv30lyWg3",
+    "tmlr": "13eDgt0YghQU2qlogGrTrXJzfD0h0F2Iw",
 }
 
 # Connect to SQLite database
