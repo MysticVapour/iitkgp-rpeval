@@ -88,7 +88,15 @@ class PapersDataset(Dataset):
 # Load SciBERT tokenizer and model
 model_name = "allenai/scibert_scivocab_uncased"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+
+try:
+    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+except OSError as e:
+    print(f"Error loading model: {e}")
+    print(
+        "Ensure you have internet access or that the model files are correctly downloaded."
+    )
+    raise
 
 # Prepare the dataset
 dataset = PapersDataset(
@@ -113,7 +121,7 @@ training_args = TrainingArguments(
     num_train_epochs=5,  # Number of training epochs
     per_device_train_batch_size=2,  # Adjust based on available GPU memory
     per_device_eval_batch_size=2,
-    evaluation_strategy="epoch",  # Evaluate after every epoch
+    eval_strategy="epoch",  # Evaluate after every epoch
     logging_dir="scibert_logs",  # Directory for logs
     logging_steps=10,  # Log every 10 steps
     save_strategy="epoch",  # Save checkpoint after each epoch
