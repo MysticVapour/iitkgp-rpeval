@@ -14,7 +14,7 @@ from transformers import (
 # 1. Connect to SQLite #
 # -------------------- #
 # Replace 'your_database.db' with the actual path to your database
-conn = sqlite3.connect("your_database.db")
+conn = sqlite3.connect("db/research_papers.db")
 
 # Load the dataset from SQLite into a Pandas DataFrame
 query = "SELECT * FROM labelled_data"
@@ -32,17 +32,10 @@ conn.close()
 def combine_sections(sections_str):
     """
     Parse the JSON string and combine sections into structured input for the model.
+    The input JSON has format {"output": text}
     """
     sections = json.loads(sections_str)
-    combined_text = (
-        f"ABSTRACT:\n{sections.get('abstract', '')}\n\n"
-        f"INTRODUCTION:\n{sections.get('introduction', '')}\n\n"
-        f"METHODOLOGY:\n{sections.get('methodology', '')}\n\n"
-        f"RESULTS:\n{sections.get('results', '')}\n\n"
-        f"DISCUSSION:\n{sections.get('discussion', '')}\n\n"
-        f"CONCLUSION:\n{sections.get('conclusion', '')}"
-    )
-    return combined_text
+    return sections.get("output", "")
 
 
 # Apply preprocessing to combine sections

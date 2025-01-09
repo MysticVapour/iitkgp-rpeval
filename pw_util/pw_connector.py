@@ -38,48 +38,49 @@ def decode_pdf(pdf_bytes):
 
 def extract_sections(text):
 
-    sections = {
-        "abstract": "",
-        "introduction": "",
-        "methodology": "",
-        "results": "",
-        "discussion": "",
-        "conclusion": "",
-    }
+    # sections = {
+    #     "abstract": "",
+    #     "introduction": "",
+    #     "methodology": "",
+    #     "results": "",
+    #     "discussion": "",
+    #     "conclusion": "",
+    # }
 
-    json_template = """{"abstract": "", "introduction": "", "methodology": "", "results": "", "discussion": "", "conclusion": ""}"""
+    # json_template = """{"abstract": "", "introduction": "", "methodology": "", "results": "", "discussion": "", "conclusion": ""}"""
 
-    prompt = (
-        "You are an expert in research papers. Extract the following sections from the given text: "
-        "Abstract, Introduction, Methodology, Results, Discussion, and Conclusion. "
-        "If a section is missing, leave it blank. Return the output as a JSON object of this format strictly: "
-        f"{json_template}\n\n"
-        f"Text: {text}"
-    )
+    # prompt = (
+    #     "You are an expert in research papers. Extract the following sections from the given text: "
+    #     "Abstract, Introduction, Methodology, Results, Discussion, and Conclusion. "
+    #     "If a section is missing, leave it blank. Return the output as a JSON object of this format strictly: "
+    #     f"{json_template}\n\n"
+    #     f"Text: {text}"
+    # )
 
-    try:
-        # Use the OpenAI API to process the text
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant for research paper analysis.",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            response_format={"type": "json_object"},
-            temperature=0,
-        )
+    # try:
+    #     # Use the OpenAI API to process the text
+    #     completion = client.chat.completions.create(
+    #         model="gpt-4o-mini",
+    #         messages=[
+    #             {
+    #                 "role": "system",
+    #                 "content": "You are a helpful assistant for research paper analysis.",
+    #             },
+    #             {"role": "user", "content": prompt},
+    #         ],
+    #         response_format={"type": "json_object"},
+    #         temperature=0,
+    #     )
 
-        # Parse the response to extract sections
-        gpt_response = completion.choices[0].message.content
-        sections = json.loads(gpt_response)
+    #     # Parse the response to extract sections
+    #     gpt_response = completion.choices[0].message.content
+    #     sections = json.loads(gpt_response)
 
-    except Exception as e:
-        print(f"Error using GPT for section extraction: {e}")
+    # except Exception as e:
+    #     print(f"Error using GPT for section extraction: {e}")
 
-    return sections
+    # return sections
+    return {"output": str(text)}
 
 
 # Function to process a Pathway table
