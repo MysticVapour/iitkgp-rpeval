@@ -25,6 +25,16 @@ CREATE TABLE IF NOT EXISTS unlabelled_data (
 )
 """
 )
+cursor.execute(
+    """
+CREATE TABLE IF NOT EXISTS results (
+    paper_id TEXT PRIMARY KEY,
+    publishable INTEGER,
+    conference TEXT,
+    rationale TEXT
+)
+"""
+)
 conn.commit()
 print("Database successfully initialized")
 conn.close()
