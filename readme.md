@@ -133,6 +133,8 @@ Note: You need not run cell 4, 5, 6 if you're not interested in evaluation
 
 Note: Make sure your OPENAI key is set, check last section in this readme for help.
 
+- **Important**: Don't worry about running this if you already have the `KDSH_2025_Dataset_Extras/` folder in your repository. Run this only if you're interested in augmentation.
+
 1. Place raw research papers in the `input_rp` folder within `augment_rp/`.
 2. Run the augmentation script:
    ```bash
