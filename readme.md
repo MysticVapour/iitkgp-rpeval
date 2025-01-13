@@ -53,7 +53,7 @@ This repository contains the complete setup and solutions for the KDSH 2025 task
 5. **`KDSH_2025_Dataset_Extras/`**:
    - Augmented dataset for KDSH 2025.
    - **Subfolders**:
-     - `Publishable`: Research papers collected from previous conferences (2023).
+     - `Publishable`: Research papers collected from previous conferences (2023/24).
      - `Unpublishable`: Artificially created unpublishable papers using Arxiv papers and rewriting techniques.
 
 ---
@@ -94,23 +94,25 @@ This repository contains the complete setup and solutions for the KDSH 2025 task
 
 ## Model Training and Evaluation
 
-### Task 1: Fine-Tune SciBERT
+### Task 1: Fine-Tune SciBERT for Publishability Classification
+
+Note: On a Macbook Pro with M3 Pro, the model training took 70 minutes
+A GPU with CUDA would be recommended for training.
+Note: Make sure your OPENAI key is set, check last section in this readme for help.
 
 1. Open the `finetune_chunking.ipynb` notebook in the `fine_tune_scibert/` folder.
 2. Run all cells to fine-tune the SciBERT model for binary classification (publishable vs. unpublishable).
 3. Review validation results directly in the notebook.
+4. Most importantly, run the final cell in this notebook to update the results table, this is important for the next task.
 
 ### Task 2: Nearest-Neighbor Classification
+
+Note: You need not run cell 4, 5, 6 if you're not interested in evaluation
 
 1. Open the `nearest_neighbour.ipynb` notebook in the `fine_tune_scibert/` folder.
 2. Run all cells to generate embeddings and perform nearest-neighbor classification for assigning conferences.
 3. Review validation results directly in the notebook.
-
----
-
-## Applying Models to the Unlabeled Dataset
-
-(Instructions for running on the unlabeled dataset provided by KDSH 2025 will be added here.)
+4. Most importantly, run the last cell in this notebook to extract results.csv for final output.
 
 ---
 
@@ -128,6 +130,8 @@ This repository contains the complete setup and solutions for the KDSH 2025 task
    - Located in the `Unpublishable` folder within `KDSH_2025_Dataset_Extras/`.
 
 ### Augmentation Steps
+
+Note: Make sure your OPENAI key is set, check last section in this readme for help.
 
 1. Place raw research papers in the `input_rp` folder within `augment_rp/`.
 2. Run the augmentation script:

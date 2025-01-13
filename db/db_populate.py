@@ -103,22 +103,12 @@ def insert_data(folder_type, folder_id, publishable=None, conference=None):
 
 
 # Insert data for labelled papers
-# insert_data("labelled", FOLDER_IDS["non_publishable"], publishable=0, conference="NA")
-# insert_data("labelled", FOLDER_IDS["cvpr"], publishable=1, conference="CVPR")
-# insert_data("labelled", FOLDER_IDS["emnlp"], publishable=1, conference="EMNLP")
-# insert_data("labelled", FOLDER_IDS["kdd"], publishable=1, conference="KDD")
-# insert_data("labelled", FOLDER_IDS["neurips"], publishable=1, conference="NeurIPS")
-# insert_data("labelled", FOLDER_IDS["tmlr"], publishable=1, conference="TMLR")
-# insert_data(
-#     "labelled", FOLDER_IDS["non_publishable_extra"], publishable=0, conference="NA"
-# )
-# insert_data("labelled", FOLDER_IDS["cvpr_extra"], publishable=1, conference="CVPR")
-# insert_data("labelled", FOLDER_IDS["emnlp_extra"], publishable=1, conference="EMNLP")
-# insert_data("labelled", FOLDER_IDS["kdd_extra"], publishable=1, conference="KDD")
-# insert_data(
-#     "labelled", FOLDER_IDS["neurips_extra"], publishable=1, conference="NeurIPS"
-# )
-# insert_data("labelled", FOLDER_IDS["tmlr_extra"], publishable=1, conference="TMLR")
+insert_data("labelled", FOLDER_IDS["non_publishable"], publishable=0, conference="NA")
+insert_data("labelled", FOLDER_IDS["cvpr"], publishable=1, conference="CVPR")
+insert_data("labelled", FOLDER_IDS["emnlp"], publishable=1, conference="EMNLP")
+insert_data("labelled", FOLDER_IDS["kdd"], publishable=1, conference="KDD")
+insert_data("labelled", FOLDER_IDS["neurips"], publishable=1, conference="NeurIPS")
+insert_data("labelled", FOLDER_IDS["tmlr"], publishable=1, conference="TMLR")
 
 # Insert data for unlabelled papers
 insert_data("unlabelled", FOLDER_IDS["unlabelled"])

@@ -5,11 +5,9 @@ from pathlib import Path
 import pypdf
 import logging
 
-# Set up logging
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
-# Connect to SQLite database
 conn = sqlite3.connect("db/research_papers.db")
 cursor = conn.cursor()
 
@@ -35,7 +33,7 @@ def read_pdf(pdf_path):
 
 
 def process_directory(dir_path, publishable, conference):
-    # List of IDs we want to exclude
+    # List of IDs we want to exclude (corrupted files)
     exclude_ids = [
         "2501.02870",
         "2501.02153",
@@ -96,26 +94,27 @@ def process_directory(dir_path, publishable, conference):
         "2501.02851",
         "2501.02820",
         "2501.03095",
+        "3580305.3599533",
+        "3580305.3599294",
+        "3580305.3599418",
     ]
 
     results = []
     path = Path(dir_path)
 
     for pdf_file in path.glob("*.pdf"):
-        file_id = str(pdf_file.stem)  # Use filename without extension as ID
+        file_id = str(pdf_file.stem)
         file_name = pdf_file.name
 
-        # Extract paper ID from filename if it's a messed_up file
+        # Ignore excluded files
         if "messed_up" in file_name:
             paper_id = file_name.split("messed_up_")[1].split("v1")[0]
             if paper_id in exclude_ids:
                 logger.info(f"Skipping known corrupted file: {file_name}")
                 continue
 
-        # Read and process PDF
         text = read_pdf(pdf_file)
         if text:
-            # Create simple sections JSON
             sections = json.dumps({"output": text})
             results.append((file_id, file_name, publishable, conference, sections))
 
@@ -153,6 +152,5 @@ for folder, (conference, publishable) in conference_mapping.items():
     else:
         print(f"Warning: Directory not found - {folder_path}")
 
-# Close database connection
 conn.close()
 print("Database population completed")
