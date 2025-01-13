@@ -44,7 +44,6 @@ def mess_up_text_with_gpt(original_text, guidelines):
     
     Your output should contain all the original text but with strategic modifications that make it unpublishable.
     """
-    # Use the OpenAI API to process the text
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -79,13 +78,9 @@ def process_papers(input_folder, output_folder, guidelines):
 
             print(f"Processing file: {filename}")
 
-            # Extract text
             original_text = extract_text_from_pdf(input_path)
-
-            # Modify text using GPT
             messed_up_text = mess_up_text_with_gpt(original_text, guidelines)
 
-            # Convert directly to PDF
             print(f"Converting to PDF: {pdf_output_path}")
             pdf = MarkdownPdf(toc_level=2)
             pdf.add_section(Section(f"{messed_up_text}"))
@@ -95,7 +90,7 @@ def process_papers(input_folder, output_folder, guidelines):
     print(f"All files processed. Output saved to: {output_folder}")
 
 
-# Example usage
+# Usage
 input_folder = "input_rp"
 output_folder = "output_rp"
 guidelines = """

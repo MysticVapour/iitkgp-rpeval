@@ -1,4 +1,6 @@
-# KDSH 2025 Repository
+# Kharagpur Data Science Hackathon 2025 Code Submission
+
+## Team : aditiherur
 
 This repository contains the complete setup and solutions for the KDSH 2025 tasks. It includes modules for database management, model training, nearest-neighbor-based classification, and dataset augmentation. Below are the details for setting up the environment, running the code, and understanding the structure of the repository.
 
@@ -135,6 +137,21 @@ This repository contains the complete setup and solutions for the KDSH 2025 task
 3. Processed files will be saved in the `output_rp/` folder.
 
 ---
+
+### OpenAI API Key Setup
+
+For some steps, you will need to add your OpenAI API key in your environemnt variables
+
+- For Windows:
+  ```bash
+  set OPENAI_API_KEY=your-api-key-here
+  ```
+- For Mac:
+  ```bash
+  export OPENAI_API_KEY='your-api-key-here'
+  ```
+
+Now you can run the code as usual and it will automatically utilize your key.
 
 ## Contact
 
