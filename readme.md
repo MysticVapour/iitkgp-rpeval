@@ -24,7 +24,7 @@ This repository contains the complete setup and solutions for the KDSH 2025 task
      - `db_init.py`: Initializes the database structure.
      - `db_populate.py`: Populates the database using the Pathway connector and research paper files.
      - `db_populate_local.py`: Loads the augmented dataset into the database.
-     - `db_update.py`: Script to update the database, if needed.
+     - `db_rand.py`: Ignore (Internal use for corrupted files.)
 
 2. **`fine_tune_scibert/`**:
 
@@ -32,8 +32,8 @@ This repository contains the complete setup and solutions for the KDSH 2025 task
    - **Key Files**:
      - `finetune_chunking.ipynb`: Notebook to fine-tune SciBERT for binary classification (Task 1).
      - `nearest_neighbour.ipynb`: Notebook for embedding-based nearest neighbor classification (Task 2).
-     - `plain_scibert.ipynb`: A simpler version of Task 1's model without chunking.
-     - `train.py`: Contains reusable training functions for fine-tuning models.
+     - `plain_scibert.ipynb`: A simpler version of Task 1's model without fine-tuning.
+     - `finetune.ipynb`: A simpler version of Task 1's model with fine-tuning but without chunking.
 
 3. **`augment_rp/`**:
 
@@ -103,7 +103,7 @@ Note: Make sure your OPENAI key is set, check last section in this readme for he
 1. Open the `finetune_chunking.ipynb` notebook in the `fine_tune_scibert/` folder.
 2. Run all cells to fine-tune the SciBERT model for binary classification (publishable vs. unpublishable).
 3. Review validation results directly in the notebook.
-4. Most importantly, run the final cell in this notebook to update the results table, this is important for the next task.
+4. **Important**: Run the final cell in this notebook to update the results table, to prepare for the next task.
 
 ### Task 2: Nearest-Neighbor Classification
 
@@ -112,7 +112,7 @@ Note: You need not run cell 4, 5, 6 if you're not interested in evaluation
 1. Open the `nearest_neighbour.ipynb` notebook in the `fine_tune_scibert/` folder.
 2. Run all cells to generate embeddings and perform nearest-neighbor classification for assigning conferences.
 3. Review validation results directly in the notebook.
-4. Most importantly, run the last cell in this notebook to extract results.csv for final output.
+4. **Important**: Run the last cell in this notebook to extract results.csv for final output. (Should show up in `fine_tune_scibert` folder.)
 
 ---
 
@@ -159,4 +159,4 @@ Now you can run the code as usual and it will automatically utilize your key.
 
 ## Contact
 
-For any issues or questions, contact **adgoch11@gmail.com**.
+For any issues or questions, contact **adgoch11@gmail.com** or call **+91 7338572728**.
